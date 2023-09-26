@@ -3,6 +3,8 @@ node_modules
 dist
 .env
 .env.development
+*.log
+yarn.lock
 
 *deprecated
 *.exe
