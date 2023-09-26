@@ -21,7 +21,7 @@ new Command({
       title: "Pong",
       color: hexToRgb(settings.colors.theme.magic),
       description: `Olá ${name}, o ping do bot é: \`${ping}ms\``,
-      timestamp: "",
+      timestamp: new Date(),
     });
 
     await interaction.reply({ ephemeral: true, embeds: [embed1] });
