@@ -3,7 +3,6 @@ import { settings } from "@/settings";
 import { hexToRgb } from "@magicyan/core";
 import {
   ApplicationCommandType,
-  ColorResolvable,
   EmbedBuilder,
 } from "discord.js";
 
