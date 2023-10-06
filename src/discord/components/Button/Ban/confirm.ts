@@ -1,8 +1,7 @@
 import { Component } from "@/discord/base";
 import { getBanOptions } from "@/discord/commands/Admin/ban";
 import { settings } from "@/settings";
-import { ColorResolvable } from "discord.js";
-import { EmbedBuilder } from "discord.js";
+import { ColorResolvable, EmbedBuilder } from "discord.js";
 
 new Component({
   customId: "confirmBan",
