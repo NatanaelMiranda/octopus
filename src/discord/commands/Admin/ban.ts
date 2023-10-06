@@ -1,4 +1,5 @@
-import { Command } from "@/discord/base";
+import { Command, Component } from "@/discord/base";
+import { settings } from "@/settings";
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,
@@ -6,7 +7,8 @@ import {
   ButtonBuilder,
   ButtonStyle,
   GuildMember,
-  Collection,
+  EmbedBuilder,
+  ColorResolvable,
 } from "discord.js";
 
 new Command({
@@ -29,7 +31,7 @@ new Command({
     },
   ],
   async run(interaction) {
-    await interaction.deferReply({ephemeral: true});
+    await interaction.deferReply({ ephemeral: true });
     const { options, memberPermissions, user, guild, appPermissions, member } =
       interaction;
 
@@ -48,7 +50,7 @@ new Command({
       });
       return;
     }
-    
+
     setBanOptions({ user: userToBan, reason });
 
     const row = new ActionRowBuilder<ButtonBuilder>({
@@ -56,22 +58,46 @@ new Command({
         new ButtonBuilder({
           customId: "confirmBan",
           label: "Confirmar",
-          style: ButtonStyle.Success,
+          style: ButtonStyle.Danger,
         }),
         new ButtonBuilder({
           customId: "cancelBan",
           label: "Cancelar",
-          style: ButtonStyle.Success,
+          style: ButtonStyle.Secondary,
         }),
       ],
     });
 
+    const embed = new EmbedBuilder({
+      title: "**Tem cetreza de que quer banir o usuário?**",
+      description: `> **Membro**: \`${userToBan.user.username}\`\n> **motivo:** \`${reason}\``,
+    }).setColor(settings.colors.theme.magic as ColorResolvable);
+
     await interaction.editReply({
-      content: `Tem certeza que deseja banir ${userToBan.user.tag} por "${reason}"?`,
+      embeds: [embed],
       components: [row],
     });
   },
 });
+components: [
+  new Component({
+    customId: "cancelBan",
+    type: "Button",
+    cache: "cached",
+    async run(interaction) {
+      getBanOptions();
+
+      await interaction.update({
+        embeds: [
+          new EmbedBuilder({
+            description: "Banimento cancelado",
+          }).setColor(settings.colors.theme.magic as ColorResolvable),
+        ],
+        components: [],
+      });
+    },
+  }),
+];
 
 interface BanOptions {
   user: GuildMember;

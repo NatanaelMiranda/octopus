@@ -1,5 +1,8 @@
 import { Component } from "@/discord/base";
 import { getBanOptions } from "@/discord/commands/Admin/ban";
+import { settings } from "@/settings";
+import { ColorResolvable } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 new Component({
   customId: "confirmBan",
@@ -21,6 +24,7 @@ new Component({
           content:
             "Eu não posso banir este usuário porque ele possui um cargo igual ou superior ao meu.",
           components: [],
+          embeds: [],
         });
         return;
       }
@@ -33,6 +37,7 @@ new Component({
           content:
             "Você não pode banir este usuário porque ele possui um cargo igual ou superior ao seu.",
           components: [],
+          embeds: [],
         });
         return;
       }
@@ -41,7 +46,11 @@ new Component({
         userToBan.ban({ reason: reason });
 
         await interaction.update({
-          content: "Usuário banido com sucesso!",
+          embeds: [
+            new EmbedBuilder({
+              description: "Usuário banido com sucesso!",
+            }).setColor(settings.colors.theme.magic as ColorResolvable),
+          ],
           components: [],
         });
       } catch (error) {
