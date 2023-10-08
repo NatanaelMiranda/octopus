@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node .",
     "build": "tsc && tspaths -p tsconfig.json -s ./src -o ./dist",
-    "start:dev": "nodemon -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
-    "start-build": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist && node dist/index.js"
+    "start:dev": "nodemon -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts"
+    
   },
   "keywords": [
     "bot",
