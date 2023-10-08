@@ -1,5 +1,6 @@
 import { Command, Component } from "@/discord/base";
 import { settings } from "@/settings";
+import { brBuilder, hexToRgb } from "@magicyan/discord";
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,
@@ -8,7 +9,6 @@ import {
   ButtonStyle,
   GuildMember,
   EmbedBuilder,
-  ColorResolvable,
 } from "discord.js";
 
 new Command({
@@ -32,8 +32,7 @@ new Command({
   ],
   async run(interaction) {
     await interaction.deferReply({ ephemeral: true });
-    const { options, memberPermissions, user, guild, appPermissions, member } =
-      interaction;
+    const { options, memberPermissions, user, appPermissions } = interaction;
 
     const userToBan = options.getMember("user") as GuildMember;
     const reason = options.getString("motivo") as string;
@@ -70,8 +69,12 @@ new Command({
 
     const embed = new EmbedBuilder({
       title: "**Tem cetreza de que quer banir o usuário?**",
-      description: `> **Membro**: \`${userToBan.user.username}\`\n> **motivo:** \`${reason}\``,
-    }).setColor(settings.colors.theme.magic as ColorResolvable);
+      description: brBuilder(
+        `> **Membro:** ${userToBan.user.username} `,
+        `> **motivo:** ${reason} `
+      ),
+      color: hexToRgb(settings.colors.theme.info),
+    });
 
     await interaction.editReply({
       embeds: [embed],
@@ -91,7 +94,8 @@ components: [
         embeds: [
           new EmbedBuilder({
             description: "Banimento cancelado",
-          }).setColor(settings.colors.theme.magic as ColorResolvable),
+            color: hexToRgb(settings.colors.theme.danger),
+          }),
         ],
         components: [],
       });

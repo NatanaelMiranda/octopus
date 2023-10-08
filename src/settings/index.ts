@@ -10,19 +10,17 @@ const developmentEnvPath = resolve(__rootname, ".env.development");
 const dev = existsSync(developmentEnvPath);
 
 const { parsed: parsedEnv } = dotenv.config({
-  path: existsSync(developmentEnvPath)
-    ? developmentEnvPath
-    : resolve(__rootname, ".env"),
+    path: existsSync(developmentEnvPath) 
+    ? developmentEnvPath 
+    : resolve(__rootname, ".env")
 });
 
 const processEnv = { ...(parsedEnv as NodeJS.ProcessEnv), dev };
 
-const log = new Signale({
-  types: {
+const log = new Signale({ types: {
     successComamnd: { badge: "√", color: "blue", label: "Command" },
     successEvent: { badge: "√", color: "yellow", label: "Event" },
-    successComponent: { badge: "√", color: "cyan", label: "Component" },
-  },
-});
+    successComponent: { badge: "√", color: "cyan", label: "Component" }
+}});
 
 export { log, processEnv, settings };

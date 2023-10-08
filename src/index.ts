@@ -1,5 +1,5 @@
-import { createClient } from "@/discord/base";
-import { log } from "@/settings";
+import { createClient } from "./discord/base";
+import { log } from "./settings";
 
 const client = createClient();
 client.start();

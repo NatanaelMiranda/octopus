@@ -3,12 +3,13 @@ node_modules
 dist
 .env
 .env.development
-*.log
-yarn.lock
+yarn-erro.log
 
 *deprecated
 *.exe
 *.config
 *.zip
 *.sqlite
-exemplo.*
+example.*
+assets
+docs

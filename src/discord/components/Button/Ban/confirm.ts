@@ -1,7 +1,8 @@
 import { Component } from "@/discord/base";
 import { getBanOptions } from "@/discord/commands/Admin/ban";
 import { settings } from "@/settings";
-import { ColorResolvable, EmbedBuilder } from "discord.js";
+import { hexToRgb } from "@magicyan/discord";
+import { EmbedBuilder } from "discord.js";
 
 new Component({
   customId: "confirmBan",
@@ -48,7 +49,8 @@ new Component({
           embeds: [
             new EmbedBuilder({
               description: "Usuário banido com sucesso!",
-            }).setColor(settings.colors.theme.magic as ColorResolvable),
+              color: hexToRgb(settings.colors.theme.success)
+            })
           ],
           components: [],
         });

@@ -1,9 +1,9 @@
 import { Command } from "@/discord/base";
 import { settings } from "@/settings";
+import { hexToRgb } from "@magicyan/discord";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  ColorResolvable,
   EmbedBuilder,
 } from "discord.js";
 
@@ -22,28 +22,25 @@ new Command({
   ],
   async run(interaction) {
     await interaction.deferReply({ ephemeral: true });
-    const { member, options } = interaction;
+    const { options } = interaction;
 
     const mention = options.getUser("usuario");
 
-    
     if (!mention) {
-        await interaction.followUp("Usuário não encontrado.");
-        return;
-      }
-  
-      const embed = new EmbedBuilder();
-  
-      // Verifica se o usuário possui um avatar e define o título e a imagem em miniatura do embed
-      if (mention.displayAvatarURL()) {
-        embed.setTitle(`Avatar de ${mention.username}`);
-        embed.setImage(mention.displayAvatarURL({ size: 256 }));
-        embed.setColor(settings.colors.theme.success as ColorResolvable);
-      } else {
-        // Caso o usuário não tenha um avatar, você pode adicionar uma mensagem personalizada
-        embed.setTitle("Usuário sem avatar");
-        embed.setColor(settings.colors.theme.danger as ColorResolvable); // Cor vermelha para indicar ausência de avatar
-      }
+      await interaction.followUp("Usuário não encontrado.");
+      return;
+    }
+
+    const embed = new EmbedBuilder();
+
+    if (mention.displayAvatarURL()) {
+      embed.setTitle(`Avatar de ${mention.username}`);
+      embed.setImage(mention.displayAvatarURL({ size: 256 }));
+      embed.setColor(hexToRgb(settings.colors.theme.success));
+    } else {
+      embed.setTitle("Usuário sem avatar");
+      embed.setColor(hexToRgb(settings.colors.theme.danger)); 
+    }
 
     await interaction.editReply({ embeds: [embed] });
   },
