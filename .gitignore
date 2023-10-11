@@ -12,3 +12,4 @@ example.*
 *.sqlite
 *firebase.json
 *firebase.development.json
+yarn.lock
