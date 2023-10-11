@@ -3,13 +3,12 @@ node_modules
 dist
 .env
 .env.development
-yarn-erro.log
+example.*
 
 *deprecated
 *.exe
 *.config
 *.zip
 *.sqlite
-example.*
-assets
-docs
+*firebase.json
+*firebase.development.json
