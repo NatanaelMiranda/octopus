@@ -1,3 +1,2 @@
-export * from "./greet";
-
-// export functions here
+export * from "./systems/logs";
+export * from "./systems/register";
