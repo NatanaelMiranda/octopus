@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon -q -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
-    "build": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist"
+    "dev": "ts-node -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
+    "build": "rimraf dist && tsc && tscpaths -p tsconfig.json -s ./src -o ./dist"
   },
   "keywords": [
     "bot",
@@ -17,6 +17,7 @@
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "nodemon": "^3.0.1",
+    "rimraf": "^5.0.5",
     "sucrase": "^3.34.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
