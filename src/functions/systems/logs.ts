@@ -48,5 +48,5 @@ export async function guildLog({
     timestamp: new Date(),
   });
 
-  channel.send({embeds: [embed]})
+  channel.send({ embeds: [embed] });
 }
