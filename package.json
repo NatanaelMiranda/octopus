@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
-    "dev": "ts-node -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
-    "nodemon": "nodemon -q -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
+    "dev": "rimraf dist && ts-node -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
     "build": "rimraf dist && tsc && tscpaths -p tsconfig.json -s ./src -o ./dist"
   },
   "keywords": [
@@ -17,7 +16,6 @@
     "@types/signale": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
-    "nodemon": "^3.0.1",
     "rimraf": "^5.0.5",
     "sucrase": "^3.34.0",
     "ts-node": "^10.9.1",
