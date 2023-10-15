@@ -1,19 +1,20 @@
 import { db } from "@/database";
-import { Command } from "@/discord/base";
-import { createModalInput, hexToRgb } from "@magicyan/discord";
+import { Command, Component } from "@/discord/base";
+import { brBuilder, createModalInput, hexToRgb } from "@magicyan/discord";
 import {
-  ApplicationCommandOptionType,
   ApplicationCommandType,
+  ApplicationCommandOptionType,
   ChannelType,
-  Collection,
+  EmbedBuilder,
+  codeBlock,
   TextInputStyle,
-  EmbedBuilder
+  Collection,
 } from "discord.js";
 
 const globalActionData: Collection<string, "join" | "leave"> = new Collection();
 
 new Command({
-  name: "sistema",
+  name: "sistemas",
   description: "Comando de sistemas",
   dmPermission,
   type: ApplicationCommandType.ChatInput,
@@ -26,12 +27,12 @@ new Command({
       options: [
         {
           name: "canal",
-          description: "Alterar o canal de sistema global",
+          description: "Alterar o canal do sistema global",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
               name: "canal",
-              description: "Escolha um canal",
+              description: "Escolha o canal",
               type: ApplicationCommandOptionType.Channel,
               channelTypes: [ChannelType.GuildText],
               required,
@@ -40,12 +41,12 @@ new Command({
         },
         {
           name: "cargo",
-          description: "Alterar o cargo de sistema global",
+          description: "Alterar o cargo do sistema global",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
               name: "cargo",
-              description: "Escolha um cargo",
+              description: "Escolha o cargo",
               type: ApplicationCommandOptionType.Role,
               required,
             },
@@ -85,7 +86,7 @@ new Command({
             },
             {
               name: "cor",
-              description: "Digite a cor hexadecimal. Emxemplo: #434d88",
+              description: "Digite a cor hexadecimal. Exemplo: #434d88",
               type: ApplicationCommandOptionType.String,
               required,
             },
@@ -100,7 +101,7 @@ new Command({
       options: [
         {
           name: "canal",
-          description: "Alterar canal do sistema de logs",
+          description: "Alterar o canal do sistema de logs",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
@@ -138,7 +139,6 @@ new Command({
             interaction.editReply({
               content: `O canal padrão do sistema global agora é o ${channel}!`,
             });
-
             return;
           }
           case "cargo": {
@@ -151,7 +151,6 @@ new Command({
             interaction.editReply({
               content: `O cargo padrão do sistema global agora é ${role}!`,
             });
-
             return;
           }
           case "mensagem": {
@@ -167,7 +166,7 @@ new Command({
               components: [
                 createModalInput({
                   customId: "systems-global-message-input",
-                  label: "Mesagem",
+                  label: "Mensagem",
                   placeholder: "Digite a mensagem",
                   style: TextInputStyle.Paragraph,
                   value: current?.global?.messages?.[action],
@@ -186,7 +185,7 @@ new Command({
             if (isNaN(hexToRgb(color))) {
               interaction.editReply({
                 content:
-                  "Você inseriu uma cor invalida! Ete commando só aceita cores hexadecimal.",
+                  "Você inseriu uma cor inválida! Este comando só aceita cores hexadecimais.",
               });
               return;
             }
@@ -199,12 +198,10 @@ new Command({
               color: hexToRgb(color),
               description: `${hexToRgb(color)}`,
             });
-
             interaction.editReply({
-              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso`,
+              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`,
               embeds: [embed],
             });
-
             return;
           }
         }
@@ -222,13 +219,45 @@ new Command({
             interaction.editReply({
               content: `O canal padrão do sistema de logs agora é o ${channel}!`,
             });
-
             return;
           }
         }
-
         return;
       }
     }
+  },
+});
+
+new Component({
+  customId: "systems-global-message-modal",
+  type: "Modal",
+  cache: "cached",
+  async run(interaction) {
+    const { member, fields, guild } = interaction;
+
+    const action = globalActionData.get(member.id);
+    if (!action) {
+      interaction.reply({
+        ephemeral,
+        content: brBuilder(
+          "Não foi possível achar os dados iniciais!",
+          "Utilize o comando novamente."
+        ),
+      });
+      return;
+    }
+    await interaction.deferReply({ ephemeral });
+
+    const message = fields.getTextInputValue("systems-global-message-input");
+
+    await db.upset(db.guilds, guild.id, {
+      global: { messages: { [action]: message } },
+    });
+
+    const text = action === "join" ? "entrada" : "saída";
+
+    interaction.editReply({
+      content: `A mensagem de ${text} do sistema global foi alterada!`,
+    });
   },
 });
