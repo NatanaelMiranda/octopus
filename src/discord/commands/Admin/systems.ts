@@ -1,10 +1,16 @@
 import { db } from "@/database";
 import { Command } from "@/discord/base";
+import { createModalInput, hexToRgb } from "@magicyan/discord";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
+  Collection,
+  TextInputStyle,
+  EmbedBuilder
 } from "discord.js";
+
+const globalActionData: Collection<string, "join" | "leave"> = new Collection();
 
 new Command({
   name: "sistema",
@@ -45,6 +51,46 @@ new Command({
             },
           ],
         },
+        {
+          name: "mensagem",
+          description: "Alterar a mensagem do sistema global",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "ação",
+              description: "Escolha a ação",
+              type: ApplicationCommandOptionType.String,
+              choices: [
+                { name: "Entrar", value: "join" },
+                { name: "Sair", value: "leave" },
+              ],
+              required,
+            },
+          ],
+        },
+        {
+          name: "cor",
+          description: "Alterar a cor da mensagem do sistema global",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "ação",
+              description: "Escolha a ação",
+              type: ApplicationCommandOptionType.String,
+              choices: [
+                { name: "Entrar", value: "join" },
+                { name: "Sair", value: "leave" },
+              ],
+              required,
+            },
+            {
+              name: "cor",
+              description: "Digite a cor hexadecimal. Emxemplo: #434d88",
+              type: ApplicationCommandOptionType.String,
+              required,
+            },
+          ],
+        },
       ],
     },
     {
@@ -70,13 +116,18 @@ new Command({
     },
   ],
   async run(interaction) {
-    const { options, guild } = interaction;
+    const { options, guild, member } = interaction;
 
-    await interaction.deferReply({ ephemeral });
+    const group = options.getSubcommandGroup(true);
+    const subCommand = options.getSubcommand(true);
 
-    switch (options.getSubcommandGroup(true)) {
+    if (subCommand !== "mensagem") {
+      await interaction.deferReply({ ephemeral });
+    }
+
+    switch (group) {
       case "global": {
-        switch (options.getSubcommand(true)) {
+        switch (subCommand) {
           case "canal": {
             const channel = options.getChannel("canal", true);
 
@@ -103,11 +154,64 @@ new Command({
 
             return;
           }
+          case "mensagem": {
+            const action = options.getString("ação", true) as "join" | "leave";
+
+            const current = await db.get(db.guilds, guild.id);
+
+            globalActionData.set(member.id, action);
+
+            interaction.showModal({
+              customId: "systems-global-message-modal",
+              title: "Mensagem do sistema global",
+              components: [
+                createModalInput({
+                  customId: "systems-global-message-input",
+                  label: "Mesagem",
+                  placeholder: "Digite a mensagem",
+                  style: TextInputStyle.Paragraph,
+                  value: current?.global?.messages?.[action],
+                }),
+              ],
+            });
+
+            return;
+          }
+          case "cor": {
+            const action = options.getString("ação", true) as "join" | "leave";
+            const color = options.getString("cor", true);
+
+            const actionDisplay = action == "join" ? "entrar" : "sair";
+
+            if (isNaN(hexToRgb(color))) {
+              interaction.editReply({
+                content:
+                  "Você inseriu uma cor invalida! Ete commando só aceita cores hexadecimal.",
+              });
+              return;
+            }
+
+            await db.upset(db.guilds, guild.id, {
+              global: { colors: { [action]: color } },
+            });
+
+            const embed = new EmbedBuilder({
+              color: hexToRgb(color),
+              description: `${hexToRgb(color)}`,
+            });
+
+            interaction.editReply({
+              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso`,
+              embeds: [embed],
+            });
+
+            return;
+          }
         }
         return;
       }
       case "logs": {
-        switch (options.getSubcommand(true)) {
+        switch (subCommand) {
           case "canal": {
             const channel = options.getChannel("canal", true);
 
