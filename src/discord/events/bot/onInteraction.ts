@@ -2,8 +2,6 @@ import { db } from "@/database";
 import { Event } from "@/discord/base";
 import { time } from "discord.js";
 
-// const logsChannelId = "1160437389324455968";
-
 new Event({
   name: "interactionCreate",
   async run(interaction) {
