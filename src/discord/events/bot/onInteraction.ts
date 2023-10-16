@@ -1,15 +1,19 @@
+import { db } from "@/database";
 import { Event } from "@/discord/base";
 import { time } from "discord.js";
 
-const logsChannelId = "1160437389324455968";
+// const logsChannelId = "1160437389324455968";
 
 new Event({
   name: "interactionCreate",
   async run(interaction) {
     if (!interaction.inCachedGuild()) return;
+    const {guild} = interaction;
+
+    const idData = await db.get(db.guilds, guild.id);
 
     if (interaction.isCommand()) {
-      const logsChannel = interaction.guild.channels.cache.get(logsChannelId);
+      const logsChannel = interaction.guild.channels.cache.get(idData?.logs?.channel || "");
       if (!logsChannel?.isTextBased()) return;
 
       const { channel, user, commandName, createdAt, commandType } =
