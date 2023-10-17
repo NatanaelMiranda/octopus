@@ -11,6 +11,21 @@ import {
   EmbedBuilder,
 } from "discord.js";
 
+interface BanOptions {
+  user: GuildMember;
+  reason: string;
+}
+
+let banOptions: BanOptions | null = null;
+
+export const setBanOptions = (options: BanOptions) => {
+  banOptions = options;
+};
+
+export const getBanOptions = () => {
+  return banOptions;
+};
+
 new Command({
   name: "ban",
   description: "Banir um usuário com confirmação",
@@ -31,7 +46,7 @@ new Command({
     },
   ],
   async run(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ ephemeral });
     const { options, memberPermissions, user, appPermissions } = interaction;
 
     const userToBan = options.getMember("user") as GuildMember;
@@ -102,18 +117,3 @@ components: [
     },
   }),
 ];
-
-interface BanOptions {
-  user: GuildMember;
-  reason: string;
-}
-
-let banOptions: BanOptions | null = null;
-
-export const setBanOptions = (options: BanOptions) => {
-  banOptions = options;
-};
-
-export const getBanOptions = () => {
-  return banOptions;
-};
