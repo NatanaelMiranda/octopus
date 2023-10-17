@@ -6,13 +6,12 @@ import {
   roleMention, codeBlock
 } from "discord.js";
 
-const moderationRoleId = "1125348869945962567";
-
 new Command({
   name: "limpar",
   description: "Comando de limpar mensagens",
   dmPermission: false,
   type: ApplicationCommandType.ChatInput,
+  defaultMemberPermissions: ["Administrator", ],
   options: [
     {
       name: "quantidade",
@@ -63,16 +62,7 @@ new Command({
   async run(interaction) {
     const { member, options, channel } = interaction;
 
-    await interaction.deferReply({ ephemeral: true });
-
-    if (!member.roles.cache.has(moderationRoleId)) {
-      interaction.editReply({
-        content: `Apenas membros com o cargo ${roleMention(
-          moderationRoleId
-        )} podem utilizer este comando!`,
-      });
-      return;
-    }
+    await interaction.deferReply({ ephemeral });
 
     if (!channel?.isTextBased()) {
       interaction.editReply({
