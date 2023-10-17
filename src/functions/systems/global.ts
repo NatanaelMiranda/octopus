@@ -66,7 +66,7 @@ export async function globalMessage({ member, action }: GlobalMessageProps) {
     time(new Date(), TimestampStyles.ShortDateTime)
   );
 
-  const suffix = action == "join" ? "entrou no servidor!" : "saio do servidor!";
+  const suffix = action == "join" ? " entrou no servidor!" : " saio do servidor!";
 
   const embed = new EmbedBuilder({
     author: createEmbedAuthor({ user, suffix }),
