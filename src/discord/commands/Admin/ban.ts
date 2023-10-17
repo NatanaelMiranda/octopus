@@ -31,6 +31,7 @@ new Command({
   description: "Banir um usuário com confirmação",
   dmPermission: false,
   type: ApplicationCommandType.ChatInput,
+  defaultMemberPermissions: ["Administrator", "BanMembers"],
   options: [
     {
       name: "user",
@@ -47,7 +48,7 @@ new Command({
   ],
   async run(interaction) {
     await interaction.deferReply({ ephemeral });
-    const { options, memberPermissions, user, appPermissions } = interaction;
+    const { options, user, appPermissions } = interaction;
 
     const userToBan = options.getMember("user") as GuildMember;
     const reason = options.getString("motivo") as string;
@@ -55,12 +56,6 @@ new Command({
     if (!appPermissions.has("BanMembers")) {
       await interaction.editReply({
         content: "Eu não tenho permissão para banir menbros neste servidor.",
-      });
-      return;
-    }
-    if (!memberPermissions.has("BanMembers")) {
-      await interaction.editReply({
-        content: `Olá ${user.username}, você não tem permissão para usar este comando!`,
       });
       return;
     }
