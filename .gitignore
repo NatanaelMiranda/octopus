@@ -13,4 +13,4 @@ example.*
 *firebase.json
 *firebase.development.json
 yarn.lock
-yarn-error.log
+*.log
