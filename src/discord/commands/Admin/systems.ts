@@ -113,6 +113,23 @@ new Command({
             },
           ],
         },
+        {
+          name: "comando",
+          description: "Ativar/Desativar os logs dos comandos",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "ação",
+              description: "Escolha a ação",
+              type: ApplicationCommandOptionType.String,
+              choices: [
+                { name: "Ativar", value: "true" },
+                { name: "Desativar", value: "false" },
+              ],
+              required,
+            },
+          ],
+        },
       ],
     },
   ],
@@ -219,6 +236,21 @@ new Command({
             interaction.editReply({
               content: `O canal padrão do sistema de logs agora é o ${channel}!`,
             });
+            return;
+          }
+          case "comando": {
+            const action = options.getString("ação", true) as "true" | "false";
+
+            const actionDisplay = action == "true" ? "ativado" : "desativado";
+
+            await db.upset(db.guilds, guild.id, {
+              logs: { commandLog: action },
+           });
+
+           interaction.editReply({content:
+          `O logs dos comandos foi ${actionDisplay}!`
+           });
+
             return;
           }
         }
