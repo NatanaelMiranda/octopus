@@ -1,5 +1,5 @@
 import { Component } from "@/discord/base";
-import { getBanOptions } from "@/discord/commands/Admin/ban";
+import { getBanOptions } from "@/discord/commands/Private/ban";
 import { settings } from "@/settings";
 import { hexToRgb } from "@magicyan/discord";
 import { EmbedBuilder } from "discord.js";
