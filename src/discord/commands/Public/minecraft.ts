@@ -91,14 +91,14 @@ new Command({
 
             if (data.icon) {
               const base64string = data.icon.replace(
-                "data:image/png;base64,",
+                "data:image\/png;base64,",
                 ""
               );
               const buffer = Buffer.from(base64string, "base64");
               files.push(new AttachmentBuilder(buffer, { name: "thumb.png" }));
             }
 
-            interaction.editReply({ embeds: [embed] });
+            interaction.editReply({ embeds: [embed], files });
             return;
           }
         }
