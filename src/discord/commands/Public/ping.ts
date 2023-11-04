@@ -1,4 +1,5 @@
 import { Command } from "@/discord/base";
+import { reply } from "@/functions";
 import { settings } from "@/settings";
 import { hexToRgb } from "@magicyan/core";
 import {
@@ -17,13 +18,10 @@ new Command({
     let name = user.username;
     let ping = client.ws.ping;
 
-    let embed1 = new EmbedBuilder({
-      title: "Pong",
-      color: hexToRgb(settings.colors.theme.magic),
-      description: `Olá ${name}, o ping do bot é: \`${ping}ms\``,
-      timestamp: new Date(),
+    reply.success({
+      interaction,
+      text: `Olá ${name}, o ping do bot é: \`${ping}ms\``
     });
 
-    await interaction.reply({ ephemeral: true, embeds: [embed1] });
   },
 });

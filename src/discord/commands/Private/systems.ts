@@ -1,5 +1,6 @@
 import { db } from "@/database";
 import { Command, Component } from "@/discord/base";
+import { embedReply, reply } from "@/functions";
 import { brBuilder, createModalInput, hexToRgb } from "@magicyan/discord";
 import {
   ApplicationCommandType,
@@ -153,9 +154,12 @@ new Command({
               global: { channel: channel.id },
             });
 
-            interaction.editReply({
-              content: `O canal padrão do sistema global agora é o ${channel}!`,
+            reply.success({
+              interaction,
+              update: true,
+              text: `O canal padrão do sistema global agora é o ${channel}!`
             });
+
             return;
           }
           case "cargo": {
@@ -165,9 +169,12 @@ new Command({
               global: { role: role.id },
             });
 
-            interaction.editReply({
-              content: `O cargo padrão do sistema global agora é ${role}!`,
+            reply.success({
+              interaction,
+              update: true,
+              text: `O cargo padrão do sistema global agora é ${role}!`
             });
+
             return;
           }
           case "mensagem": {
@@ -215,10 +222,15 @@ new Command({
               color: hexToRgb(color),
               description: `${hexToRgb(color)}`,
             });
-            interaction.editReply({
-              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`,
-              embeds: [embed],
+
+            embedReply({
+              interaction,
+              color: color,
+              update: true,
+              text: `${hexToRgb(color)}`,
+              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`
             });
+
             return;
           }
         }
@@ -233,9 +245,12 @@ new Command({
               logs: { channel: channel.id },
             });
 
-            interaction.editReply({
-              content: `O canal padrão do sistema de logs agora é o ${channel}!`,
+            reply.success({
+              interaction,
+              update: true,
+              text: `O canal padrão do sistema de logs agora é o ${channel}!`
             });
+
             return;
           }
           case "comando": {
@@ -247,8 +262,10 @@ new Command({
               logs: { commandLog: action },
             });
 
-            interaction.editReply({
-              content: `O logs dos comandos foi ${actionDisplay}!`,
+            reply.success({
+              interaction,
+              update: true,
+              text: `O logs dos comandos foi ${actionDisplay}!`
             });
 
             return;
@@ -288,8 +305,11 @@ new Component({
 
     const text = action === "join" ? "entrada" : "saída";
 
-    interaction.editReply({
-      content: `A mensagem de ${text} do sistema global foi alterada!`,
+    reply.success({
+      interaction,
+      update: true,
+      text: `A mensagem de ${text} do sistema global foi alterada!`
     });
+
   },
 });
