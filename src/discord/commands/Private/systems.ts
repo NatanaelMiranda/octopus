@@ -245,11 +245,11 @@ new Command({
 
             await db.upset(db.guilds, guild.id, {
               logs: { commandLog: action },
-           });
+            });
 
-           interaction.editReply({content:
-          `O logs dos comandos foi ${actionDisplay}!`
-           });
+            interaction.editReply({
+              content: `O logs dos comandos foi ${actionDisplay}!`,
+            });
 
             return;
           }
