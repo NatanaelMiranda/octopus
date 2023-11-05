@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
-    "dev": "rimraf dist && nodemon -q -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
+    "dev": "rimraf dist && nodemon -r tsconfig-paths/register --transpiler sucrase/ts-node-plugin src/index.ts",
     "build": "rimraf dist && tsc && tscpaths -p tsconfig.json -s ./src -o ./dist"
   },
   "keywords": [
