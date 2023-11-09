@@ -110,7 +110,7 @@ new Command({
         .catch((err) =>
           interaction.editReply({
             content: brBuilder(
-              "Não foipssivel deletar mensagens",
+              "Não foi possivel deletar mensagens",
               codeBlock("ts", err)
             ),
           })
@@ -131,7 +131,7 @@ new Command({
       .catch((err) =>
         interaction.editReply({
           content: brBuilder(
-            "Não foipssivel deletar mensagens",
+            "Não foi possivel deletar mensagens",
             codeBlock("ts", err)
           ),
         })
