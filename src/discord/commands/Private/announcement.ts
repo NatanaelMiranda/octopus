@@ -34,6 +34,7 @@ new Command({
   name: "anuncio",
   description: "Comando de anúncios",
   dmPermission,
+  defaultMemberPermissions: ["Administrator", "ManageMessages"],
   type: ApplicationCommandType.ChatInput,
   options: [
     {
