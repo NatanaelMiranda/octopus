@@ -1,4 +1,5 @@
 import { Command, Component } from "@/discord/base";
+import { reply } from "@/functions";
 import { settings } from "@/settings";
 import {
   brBuilder,
@@ -93,10 +94,12 @@ new Component({
     const messageProps = members.get(member.id);
 
     if (!messageProps) {
-      interaction.reply({
-        ephemeral,
-        content:
-          "Não foi possivel obter os dados iniciais! Ultilize o comando novamente.",
+      reply.danger({
+        interaction,
+        text: brBuilder(
+          "Não foi possivel obter os dados iniciais!",
+          "Ultilize o comando novamente."
+        ),
       });
       return;
     }
@@ -152,11 +155,9 @@ new Component({
       collector.stop();
 
       if (customId === "announcement-cancel-button") {
-        subInteraction.update({
-          embeds,
-          components,
-          files: [],
-          content: "Ação cancelada",
+      
+        reply.danger({
+          interaction, update: true, clear: true, text: "Ação cancelada"
         });
         return;
       }
@@ -174,20 +175,22 @@ new Component({
         })
         .then((msg) => {
           const emoji = formatEmoji(settings.emoji.static.check);
-          interaction.editReply({
-            components,
-            embeds,
-            files: [],
-            content: `${emoji} Mensagem enviada com sucessao! Confira ${msg.url}`,
+
+          reply.success({
+            interaction,
+            update: true,
+            clear: true,
+            text: `${emoji} Mensagem enviada com sucessao! Confira ${msg.url}`,
           });
         })
         .catch((err) => {
           const emoji = formatEmoji(settings.emoji.static.cancel);
-          interaction.editReply({
-            components,
-            embeds,
-            files: [],
-            content: brBuilder(
+
+          reply.danger({
+            interaction,
+            update: true,
+            clear: true,
+            text: brBuilder(
               `${emoji} Não foi possivel enviar a mensagem`,
               codeBlock("bash", err)
             ),
