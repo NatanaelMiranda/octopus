@@ -114,23 +114,6 @@ new Command({
             },
           ],
         },
-        {
-          name: "comando",
-          description: "Ativar/Desativar os logs dos comandos",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "ação",
-              description: "Escolha a ação",
-              type: ApplicationCommandOptionType.String,
-              choices: [
-                { name: "Ativar", value: "true" },
-                { name: "Desativar", value: "false" },
-              ],
-              required,
-            },
-          ],
-        },
       ],
     },
   ],
@@ -157,7 +140,7 @@ new Command({
             reply.success({
               interaction,
               update: true,
-              text: `O canal padrão do sistema global agora é o ${channel}!`
+              text: `O canal padrão do sistema global agora é o ${channel}!`,
             });
 
             return;
@@ -172,7 +155,7 @@ new Command({
             reply.success({
               interaction,
               update: true,
-              text: `O cargo padrão do sistema global agora é ${role}!`
+              text: `O cargo padrão do sistema global agora é ${role}!`,
             });
 
             return;
@@ -228,7 +211,7 @@ new Command({
               color: color,
               update: true,
               text: `${hexToRgb(color)}`,
-              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`
+              content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`,
             });
 
             return;
@@ -248,28 +231,12 @@ new Command({
             reply.success({
               interaction,
               update: true,
-              text: `O canal padrão do sistema de logs agora é o ${channel}!`
+              text: `O canal padrão do sistema de logs agora é o ${channel}!`,
             });
 
             return;
           }
-          case "comando": {
-            const action = options.getString("ação", true) as "true" | "false";
-
-            const actionDisplay = action == "true" ? "ativado" : "desativado";
-
-            await db.upset(db.guilds, guild.id, {
-              logs: { commandLog: action },
-            });
-
-            reply.success({
-              interaction,
-              update: true,
-              text: `O logs dos comandos foi ${actionDisplay}!`
-            });
-
-            return;
-          }
+          
         }
         return;
       }
@@ -308,8 +275,7 @@ new Component({
     reply.success({
       interaction,
       update: true,
-      text: `A mensagem de ${text} do sistema global foi alterada!`
+      text: `A mensagem de ${text} do sistema global foi alterada!`,
     });
-
   },
 });

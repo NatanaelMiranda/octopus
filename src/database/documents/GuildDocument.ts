@@ -1,6 +1,5 @@
 interface GuildLogs {
    channel?: string,
-   commandLog?: string
 }
 
 interface GuildGlobal {
