@@ -114,6 +114,23 @@ new Command({
             },
           ],
         },
+        {
+          name: "comando",
+          description: "Ativar/Desativar os logs de comando",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "ação",
+              description: "Escolha a ação",
+              type: ApplicationCommandOptionType.String,
+              choices: [
+                { name: "Ativar", value: "true" },
+                { name: "Desativar", value: "false" },
+              ],
+              required,
+            },
+          ],
+        },
       ],
     },
   ],
@@ -236,7 +253,31 @@ new Command({
 
             return;
           }
-          
+
+          case "comando": {
+            const logStatus = options.getString("ação", true) as
+              | "true"
+              | "false";
+
+            const commandLogStatus: boolean = logStatus === "true";
+
+            await db.upset(db.guilds, guild.id, {
+              logs: { commandLogStatus },
+            });
+
+            ((await logStatus) as "true")
+              ? reply.success({
+                  interaction,
+                  update: true,
+                  text: "O log dos comandos foi ativado",
+                })
+              : reply.danger({
+                  interaction,
+                  update: true,
+                  text: "O log dos comandos foi desativado",
+                });
+            return;
+          }
         }
         return;
       }
