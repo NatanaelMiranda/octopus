@@ -93,6 +93,20 @@ new Command({
             },
           ],
         },
+        {
+          name: "sala-automatica",
+          description: "Criar sala de bate-papo automaticamente",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "canal",
+              description: "Canal de voiz pricipal da sala automatica",
+              type: ApplicationCommandOptionType.Channel,
+              channelTypes: [ChannelType.GuildVoice],
+              required,
+            },
+          ],
+        },
       ],
     },
     {
@@ -229,6 +243,21 @@ new Command({
               update: true,
               text: `${hexToRgb(color)}`,
               content: `Cor da ação de ${actionDisplay} do sistema global foi alterada com sucesso!`,
+            });
+
+            return;
+          }
+          case "sala-automatica": {
+            const channel = options.getChannel("canal", true);
+
+            await db.upset(db.guilds, guild.id, {
+              global: { autoVoiceChannel: channel.id },
+            });
+
+            reply.success({
+              interaction,
+              update: true,
+              text: "O canal de criar salas automaticamente foi setado com sucesso!",
             });
 
             return;

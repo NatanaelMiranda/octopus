@@ -6,3 +6,4 @@ export * from "./systems/commandLog";
 export * from "./data/minecraft";
 
 export * from "./discord/reply";
+export * from "./discord/autoChannel";

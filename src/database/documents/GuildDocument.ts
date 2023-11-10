@@ -14,6 +14,7 @@ interface GuildGlobal {
     join?: string;
     leave?: string;
   };
+  autoVoiceChannel?: string
 }
 
 export interface GuildDocument {
