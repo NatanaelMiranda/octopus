@@ -1,18 +1,64 @@
 import { db } from "@/database";
-import { Client, Interaction, time } from "discord.js";
+import { Client, Collection, Interaction, TextChannel, time } from "discord.js";
+
+interface CommandLogsProps {
+  logState?: boolean;
+  channelId?: string;
+}
+const Guilds: Collection<string, CommandLogsProps> = new Collection();
+
+export async function CommandLogsData(
+  client: Client,
+) {
+  client.channels.cache.forEach(async (guild) => {
+    const actionData = await db.get(db.guilds, guild.id);
+
+    const LogState = actionData?.logs?.commandLogStatus;
+    const channel = actionData?.logs?.channel;
+
+    Guilds.set(guild.id, {
+      logState: LogState || false,
+      channelId: channel || "",
+    });
+  });
+}
 
 export async function commandLogs(interaction: Interaction) {
   if (!interaction.inCachedGuild()) return;
 
-  const actionData = await db.get(db.guilds, interaction.guild.id);
+  const GuildsProps = Guilds.get(interaction.guild.id);
 
-  const logStatus = actionData?.logs?.commandLogStatus;
-  const channelId = actionData?.logs?.channel;
+  const logState = GuildsProps?.logState;
 
-  if (!logStatus) return;
+  if (!logState) {
+    const actionData = await db.get(db.guilds, interaction.guild.id);
+    
+    const LogState = actionData?.logs?.commandLogStatus;
+    const channel = actionData?.logs?.channel;
+
+    Guilds.set(interaction.guild.id, {
+      logState: LogState || true,
+      channelId: channel || ""
+    });
+
+  }
+
+  if (!logState) return;
+
+  const channelId = interaction.guild.channels.cache.get(GuildsProps.channelId || "");
+
+  if(!channelId){
+    const actionData = await db.get(db.guilds, interaction.guild.id);
+    
+    const channel = actionData?.logs?.channel;
+
+    Guilds.set(interaction.guild.id, {
+      channelId: channel || ""
+    });
+  }
 
   if (interaction.isCommand()) {
-    const logsChannel = interaction.guild.channels.cache.get(channelId || "");
+    const logsChannel = interaction.guild.channels.cache.get(GuildsProps.channelId || "");
     if (!logsChannel?.isTextBased()) return;
 
     const { channel, user, commandName, createdAt, commandType } = interaction;
