@@ -1,14 +1,22 @@
 import { Command } from "@/discord/base";
-import { fetchMinecraftServerStatus } from "@/functions";
+import { fetchMinecraftServerStatus, reply } from "@/functions";
 import { settings } from "@/settings";
-import { brBuilder, hexToRgb } from "@magicyan/discord";
+import { brBuilder, createRow, hexToRgb } from "@magicyan/discord";
 import {
   ApplicationCommandType,
   ApplicationCommandOptionType,
   AttachmentBuilder,
   EmbedBuilder,
   inlineCode,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js";
+import {
+  RenderCrops,
+  RenderTypes,
+  fetchSkinInfo,
+  fetchSkinRender,
+} from "starlightskinapi";
 
 new Command({
   name: "minecraft",
@@ -29,6 +37,26 @@ new Command({
             {
               name: "ip",
               description: "Ip do servidor",
+              type: ApplicationCommandOptionType.String,
+              required,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "skins",
+      description: "Comando de skins de minecraft",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "buscar",
+          description: "Buscar e exibir skin de um jogador",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "nick",
+              description: "Nick ou UUID do jogador",
               type: ApplicationCommandOptionType.String,
               required,
             },
@@ -91,7 +119,7 @@ new Command({
 
             if (data.icon) {
               const base64string = data.icon.replace(
-                "data:image\/png;base64,",
+                "data:image/png;base64,",
                 ""
               );
               const buffer = Buffer.from(base64string, "base64");
@@ -101,6 +129,94 @@ new Command({
             interaction.editReply({ embeds: [embed], files });
             return;
           }
+        }
+        return;
+      }
+
+      case "skins": {
+        switch (subCommand) {
+          case "buscar":
+            {
+              await interaction.deferReply({ ephemeral });
+
+              const nickOrUid = options.getString("nick", true);
+
+              const results = await Promise.all([
+                fetchSkinInfo(nickOrUid),
+                fetchSkinRender(nickOrUid, {
+                  type: RenderTypes.Head,
+                  crop: RenderCrops.Full,
+                }),
+                fetchSkinRender(nickOrUid, {
+                  type: RenderTypes.Dungeons,
+                  crop: RenderCrops.Full,
+                }),
+                fetchSkinRender(nickOrUid, {
+                  type: RenderTypes.Skin,
+                  crop: RenderCrops.Default,
+                }),
+              ]);
+
+              const [info, head, fullBory, skin] = results;
+
+              if (
+                !info.success ||
+                !head.success ||
+                !fullBory.success ||
+                !skin.success
+              ) {
+                reply.danger({
+                  interaction,
+                  update: true,
+                  text: brBuilder(
+                    `Não foi possível obter skin de \`${nickOrUid}\``
+                  ),
+                });
+                return;
+              }
+
+              const embed = new EmbedBuilder({
+                color: hexToRgb(settings.colors.theme.magic),
+                description: brBuilder(
+                  `# Skin de ${nickOrUid}`,
+                  `Tamanho: **${info.skinTextureWidth}x${info.skinTextureHeight}**`
+                ),
+                author: { name: nickOrUid, iconURL: head.url },
+                thumbnail: { url: head.url },
+                image: { url: fullBory.url },
+              });
+
+              const row = createRow(
+                new ButtonBuilder({
+                  url: "https://namemc.com/profile/" + nickOrUid,
+                  label: "NameMC",
+                  emoji: "🪪",
+                  style: ButtonStyle.Link,
+                }),
+                new ButtonBuilder({
+                  url: skin.url,
+                  label: "Baixar skin",
+                  emoji: "⬇️",
+                  style: ButtonStyle.Link,
+                })
+              );
+
+              if (info.userCape) {
+                row.addComponents(
+                  new ButtonBuilder({
+                    url: info.userCape,
+                    label: "Baixar capa",
+                    style: ButtonStyle.Link,
+                  })
+                );
+              }
+
+              interaction.editReply({ embeds: [embed], components: [row] });
+
+              return;
+            }
+
+            return;
         }
 
         return;

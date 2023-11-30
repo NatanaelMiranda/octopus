@@ -33,6 +33,7 @@
     "firebase-admin": "^11.10.1",
     "glob": "^10.3.3",
     "signale": "^1.4.0",
+    "starlightskinapi": "^1.0.5",
     "tslib": "^2.5.3",
     "typesaurus": "^7.2.0"
   }
