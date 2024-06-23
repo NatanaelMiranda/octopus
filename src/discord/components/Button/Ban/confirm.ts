@@ -2,11 +2,11 @@ import { Component } from "@/discord/base";
 import { getBanOptions } from "@/discord/commands/Private/ban";
 import { settings } from "@/settings";
 import { hexToRgb } from "@magicyan/discord";
-import { EmbedBuilder } from "discord.js";
+import { ComponentType, EmbedBuilder } from "discord.js";
 
 new Component({
   customId: "confirmBan",
-  type: "Button",
+  type: ComponentType.Button,
   cache: "cached",
   async run(interaction) {
     const { guild, member } = interaction;
