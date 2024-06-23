@@ -3028,6 +3028,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+starlightskinapi@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/starlightskinapi/-/starlightskinapi-1.0.10.tgz#735cc9ec90e25464aca02dfdc9cade4555f0932f"
+  integrity sha512-+vVWrFFc2BzsVEOOZcmUKbbwgk51/9YLA3csmmaNia8da8SQ+pdO6e37xX3/CZqFsdsozjUoXl6pIBAdY1Ny3Q==
+
 static-extend@^0.1.1:
   version "0.1.2"
   resolved "https://registry.npmjs.org/static-extend/-/static-extend-0.1.2.tgz"
