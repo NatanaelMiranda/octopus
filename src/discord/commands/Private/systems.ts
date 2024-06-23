@@ -1,5 +1,5 @@
 import { db } from "@/database";
-import { Command, Component } from "@/discord/base";
+import { Command, Component, Modal } from "@/discord/base";
 import { embedReply, reply } from "@/functions";
 import { brBuilder, createModalInput, hexToRgb } from "@magicyan/discord";
 import {
@@ -10,6 +10,7 @@ import {
   codeBlock,
   TextInputStyle,
   Collection,
+  ComponentType,
 } from "discord.js";
 
 const globalActionData: Collection<string, "join" | "leave"> = new Collection();
@@ -314,9 +315,8 @@ new Command({
   },
 });
 
-new Component({
+new Modal({
   customId: "systems-global-message-modal",
-  type: "Modal",
   cache: "cached",
   async run(interaction) {
     const { member, fields, guild } = interaction;

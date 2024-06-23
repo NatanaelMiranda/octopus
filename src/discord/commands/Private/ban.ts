@@ -9,6 +9,7 @@ import {
   ButtonStyle,
   GuildMember,
   EmbedBuilder,
+  ComponentType
 } from "discord.js";
 
 interface BanOptions {
@@ -95,7 +96,7 @@ new Command({
 components: [
   new Component({
     customId: "cancelBan",
-    type: "Button",
+    type: ComponentType.Button,
     cache: "cached",
     async run(interaction) {
       getBanOptions();

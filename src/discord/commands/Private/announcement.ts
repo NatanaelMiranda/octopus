@@ -1,4 +1,4 @@
-import { Command, Component } from "@/discord/base";
+import { Command, Component, Modal } from "@/discord/base";
 import { reply } from "@/functions";
 import { settings } from "@/settings";
 import {
@@ -84,9 +84,8 @@ new Command({
   },
 });
 
-new Component({
+new Modal({
   customId: "announcement-modal",
-  type: "Modal",
   cache: "cached",
   async run(interaction) {
     const { fields, guild, member } = interaction;
