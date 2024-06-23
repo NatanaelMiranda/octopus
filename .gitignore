@@ -3,7 +3,6 @@ node_modules
 dist
 .env
 .env.development
-example.*
 
 *deprecated
 *.exe
@@ -12,5 +11,3 @@ example.*
 *.sqlite
 *firebase.json
 *firebase.development.json
-yarn.lock
-*.log

@@ -1,47 +1,35 @@
+import { ApplicationCommandData, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputCommandInteraction, Collection, ComponentType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction } from "discord.js";
 import { log } from "@/settings";
 import ck from "chalk";
-import {
-    ApplicationCommandData,
-    ApplicationCommandType,
-    AutocompleteInteraction,
-    ChatInputCommandInteraction,
-    Collection, CommandInteraction,
-    MessageContextMenuCommandInteraction,
-    UserContextMenuCommandInteraction
-} from "discord.js";
 
-type C<B extends boolean, I extends CommandInteraction | AutocompleteInteraction> = 
-I extends ChatInputCommandInteraction 
-? B extends false ? ChatInputCommandInteraction<"cached"> : ChatInputCommandInteraction
-: I extends UserContextMenuCommandInteraction 
-? B extends false ? UserContextMenuCommandInteraction<"cached"> : UserContextMenuCommandInteraction
-: I extends MessageContextMenuCommandInteraction 
-? B extends false ? MessageContextMenuCommandInteraction<"cached"> : MessageContextMenuCommandInteraction
-: I extends AutocompleteInteraction 
-? B extends false ? AutocompleteInteraction<"cached"> : AutocompleteInteraction
-: never;
+type GetCache<D> = D extends false ? "cached" : CacheType;
 
-type CommandProps<DmPermission extends boolean> =
+type CommandProps<D, Store> =
 {
+    name: Lowercase<string>;
     type: ApplicationCommandType.ChatInput,
-    autoComplete?(interaction: C<DmPermission, AutocompleteInteraction>): any
-    run(interaction: C<DmPermission, ChatInputCommandInteraction>,): any
+    autoComplete?(interaction: AutocompleteInteraction<GetCache<D>>, store: Store): any
+    run(interaction: ChatInputCommandInteraction<GetCache<D>>, store: Store): any
 } | {
     type: ApplicationCommandType.User,
-    run(interaction: C<DmPermission, UserContextMenuCommandInteraction>): any
+    run(interaction: UserContextMenuCommandInteraction<GetCache<D>>, store: Store): any
 } | {
     type: ApplicationCommandType.Message,
-    run(interaction: C<DmPermission, MessageContextMenuCommandInteraction>): any
+    run(interaction: MessageContextMenuCommandInteraction<GetCache<D>>, store: Store): any
 }
 
-type CommandData<DmPermission extends boolean> = CommandProps<DmPermission> & ApplicationCommandData & {
-    dmPermission: DmPermission,
+type CommandStoreOptions = Map<any, any> | Set<any> | Collection<any, any> | Array<any>; 
+type CommandStore = Record<string, CommandStoreOptions>;
+
+type CommandData<D extends boolean, Store extends CommandStore> = CommandProps<D, Store> & ApplicationCommandData & {
+    dmPermission?: D,
+    store?: Store;
 }
 
-export class Command<DmPermission extends boolean = boolean> {
-    public static all: Collection<string, CommandData<boolean>> = new Collection();
-    constructor(public data: CommandData<DmPermission>){
-        log.successComamnd(ck.green(`${ck.cyan.underline(data.name)} has been successfully registered!`));
-        Command.all.set(data.name, data);
+export class Command<D extends boolean, Store extends CommandStore = CommandStore> {
+    public static commands: Collection<string, CommandData<boolean, CommandStore>> = new Collection();
+    constructor(public data: CommandData<D, Store>){
+        log.success(ck.green(`${ck.blue.underline(data.name)} command registered successfully!`));
+        Command.commands.set(data.name, data);
     }
 }
